@@ -1,0 +1,86 @@
+#primer codigo
+import math
+import numpy as np
+from scipy.integrate import odeint
+import pylab
+
+def f(y, t, lam):
+    return -lam * y + math.sin(10 * math.pi * t)
+
+k_values = np.concatenate([np.linspace(0, 1, 10), np.linspace(1, 25, 10), np.linspace(30, 200, 10)])
+
+ts = np.arange(0, 12.01, 0.01)
+y0 = -2
+
+pylab.figure(figsize=(10, 6))
+for k in k_values:
+    ys = odeint(f, y0, ts, args=(k,))
+    pylab.plot(ts, ys, label=f'k={k:.2f}')
+
+pylab.xlabel('Time')
+pylab.ylabel('Solution y(t)')
+pylab.title('Solution of ODE for Different Values of k')
+pylab.legend(loc='upper right', fontsize='small')
+pylab.savefig('odeintexample_k_values.pdf')
+pylab.show()
+
+
+
+
+#segundo codigo
+from numpy import array, arange, linspace
+from scipy.integrate import odeint
+import pylab
+
+def f(y, t, omega):  
+    r = y[0]         
+    v = y[1]         
+    drdt = v         
+    dvdt = -omega ** 2 * r
+    return array([drdt, dvdt]) 
+    
+k_values = linspace(0, 1, 10).tolist() + linspace(1, 25, 10).tolist() + linspace(30, 200, 10).tolist()
+
+
+ts = arange(0, 200, 0.1)
+r0 = 1  
+v0 = 0   
+y0 = array([r0, v0])  
+
+pylab.figure(figsize=(10, 6))
+
+
+for k in k_values:
+    omega = k  
+    ys = odeint(f, y0, ts, args=(omega,))  
+    rs = ys[:, 0]  
+    vs = ys[:, 1]  
+
+    
+    pylab.plot(ts, rs, label=f'omega={omega:.2f}')
+
+pylab.xlabel('Time')
+pylab.ylabel('r(t)')
+pylab.title('Oscillator with Different Values of omega')
+pylab.legend(loc='upper right', fontsize='small')
+pylab.savefig('oscillator_r_vs_t.pdf')
+pylab.show()
+
+
+pylab.figure(figsize=(10, 6))
+
+for k in k_values:
+    omega = k 
+    ys = odeint(f, y0, ts, args=(omega,)) 
+    rs = ys[:, 0]
+    vs = ys[:, 1]
+
+    
+    pylab.plot(rs, vs, label=f'omega={omega:.2f}')
+
+pylab.xlabel('r(t)')
+pylab.ylabel('v(t)')
+pylab.title('Phase Diagram for Different Values of omega')
+pylab.legend(loc='upper right', fontsize='small')
+pylab.savefig('oscillator_phase_diagram.pdf')
+pylab.show()
